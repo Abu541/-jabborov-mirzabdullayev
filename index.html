@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+
+<html lang="uz">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Paxta bilimdonlari</title>
+
+<style>
+
+*{box-sizing:border-box}
+
+body{margin:0;font-family:Arial,sans-serif;background:linear-gradient(135deg,#102a43,#167d8d);color:#fff;min-height:100vh;padding:20px}
+
+main{max-width:700px;margin:30px auto;background:#ffffff16;border:1px solid #ffffff40;border-radius:24px;padding:25px;text-align:center}
+
+h1{font-size:30px}
+
+p{line-height:1.7}
+
+.tag{color:#ffe082}
+
+button{background:#ffe082;color:#17324d;border:0;border-radius:12px;padding:14px 20px;font-size:16px;font-weight:bold;cursor:pointer;margin:8px}
+
+button:hover{opacity:.85}
+
+.card{background:#ffffff18;padding:18px;border-radius:16px;margin:20px 0}
+
+footer{font-size:13px;opacity:.8;margin-top:25px}
+
+</style>
+
+</head>
+
+<body>
+
+<main>
+
+<div class="tag">📚 BILIMLAR BELLASHUVI</div>
+
+<h1>🌿 Paxta bilimdonlari</h1>
+
+<p><b>Mavzu:</b> Paxta tolasi sifat ko‘rsatkichlarini klassyor usulida aniqlash</p>
+
+<p>15 ta savol • 2 ta jamoa • Bilim va tezkorlik bellashuvi</p>
+
+<div class="card">
+
+<h2>Musobaqaga xush kelibsiz!</h2>
+
+<p>Paxta tolasi sifat ko‘rsatkichlari haqidagi bilimlaringizni sinab ko‘ring va jamoangiz bilan g‘oliblik uchun kurashing.</p>
+
+<button onclick="startQuiz()">🚀 Boshlash</button>
+
+</div>
+
+<div id="game"></div>
+
+<footer>Mualliflar: Jabborov A. — Mirzabdullayev O.</footer>
+
+</main>
+
+<script>
+
+function startQuiz(){
+
+document.getElementById('game').innerHTML=
+
+'<div class="card"><h2>Jamoalar tayyormi?</h2><p>1-jamoa va 2-jamoa navbat bilan savollarga javob beradi.</p><p>Keyingi bosqichda savollar va ball hisoblash tizimi qo‘shiladi.</p><button onclick="location.reload()">Bosh sahifaga qaytish</button></div>';
+
+}
+
+</script>
+
+</body>
+
+</html>
