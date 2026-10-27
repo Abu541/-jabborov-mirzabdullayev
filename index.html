@@ -14,23 +14,57 @@
 
 *{box-sizing:border-box}
 
-body{margin:0;font-family:Arial,sans-serif;background:linear-gradient(135deg,#102a43,#167d8d);color:#fff;min-height:100vh;padding:20px}
+body{margin:0;padding:16px;font-family:Arial,sans-serif;background:linear-gradient(135deg,#073b4c,#118ab2);color:#fff;min-height:100vh}
 
-main{max-width:700px;margin:30px auto;background:#ffffff16;border:1px solid #ffffff40;border-radius:24px;padding:25px;text-align:center}
+main{max-width:780px;margin:auto}
 
-h1{font-size:30px}
+header,.panel{padding:22px;margin-bottom:16px;border-radius:20px;background:#ffffff14;border:1px solid #ffffff40}
 
-p{line-height:1.7}
+header{text-align:center}
 
-.tag{color:#ffe082}
+h1{color:#ffd166;font-size:clamp(28px,6vw,42px)}
 
-button{background:#ffe082;color:#17324d;border:0;border-radius:12px;padding:14px 20px;font-size:16px;font-weight:bold;cursor:pointer;margin:8px}
+h2{margin-top:0}
 
-button:hover{opacity:.85}
+.small{font-size:14px;line-height:1.6;color:#dbeafe}
 
-.card{background:#ffffff18;padding:18px;border-radius:16px;margin:20px 0}
+.teams,.answers{display:grid;grid-template-columns:1fr 1fr;gap:12px}
 
-footer{font-size:13px;opacity:.8;margin-top:25px}
+.team{padding:15px;text-align:center;border:2px solid transparent;border-radius:14px;background:#ffffff12}
+
+.active{border-color:#ffd166;background:#ffffff25}
+
+.score{font-size:34px;color:#ffd166;font-weight:bold;margin:8px}
+
+button{padding:14px;border:0;border-radius:12px;font-size:16px;font-weight:bold;cursor:pointer}
+
+.primary{background:#ffd166;color:#173047}
+
+.answer{background:white;color:#173047;text-align:left;line-height:1.5}
+
+.answer:disabled{opacity:1;cursor:default}
+
+.good{background:#a7f3c0;color:#064e3b}
+
+.bad{background:#ffcaca;color:#7f1d1d}
+
+.question{font-size:21px;line-height:1.6;margin:20px 0}
+
+.hidden{display:none!important}
+
+#feedback{padding:14px;border-radius:12px;background:#ffffff18;line-height:1.6;margin:16px 0}
+
+.actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:16px}
+
+.actions button{flex:1}
+
+.bar{height:8px;border-radius:8px;background:#ffffff30;overflow:hidden}
+
+#progress{height:100%;width:0;background:#ffd166;transition:width .3s}
+
+@media(max-width:520px){.answers{grid-template-columns:1fr}.panel,header{padding:16px}}
+
+@media print{body{background:white;color:black}.panel,header{border:1px solid #aaa;background:white;color:black}button{display:none!important}}
 
 </style>
 
@@ -40,37 +74,465 @@ footer{font-size:13px;opacity:.8;margin-top:25px}
 
 <main>
 
-<div class="tag">📚 BILIMLAR BELLASHUVI</div>
+<header>
+
+<p>📚 BILIMLAR BELLASHUVI</p>
 
 <h1>🌿 Paxta bilimdonlari</h1>
 
 <p><b>Mavzu:</b> Paxta tolasi sifat ko‘rsatkichlarini klassyor usulida aniqlash</p>
 
-<p>15 ta savol • 2 ta jamoa • Bilim va tezkorlik bellashuvi</p>
+<p class="small">Mualliflar: Jabborov A. — Mirzabdullayev O.</p>
 
-<div class="card">
+</header>
 
-<h2>Musobaqaga xush kelibsiz!</h2>
+<section class="panel">
 
-<p>Paxta tolasi sifat ko‘rsatkichlari haqidagi bilimlaringizni sinab ko‘ring va jamoangiz bilan g‘oliblik uchun kurashing.</p>
+<h2>🏆 Jamoalar hisobi</h2>
 
-<button onclick="startQuiz()">🚀 Boshlash</button>
+<div class="teams">
+
+<div class="team active" id="team0">
+
+<strong>🔵 1-JAMOA</strong>
+
+<div class="score" id="score0">0</div> ball
 
 </div>
 
-<div id="game"></div>
+<div class="team" id="team1">
 
-<footer>Mualliflar: Jabborov A. — Mirzabdullayev O.</footer>
+<strong>🟠 2-JAMOA</strong>
+
+<div class="score" id="score1">0</div> ball
+
+</div>
+
+</div>
+
+<p id="turn" style="text-align:center">O‘yinni boshlash uchun tugmani bosing.</p>
+
+<div class="bar"><div id="progress"></div></div>
+
+<p id="counter" class="small">15 ta savol</p>
+
+<button class="primary" id="start" onclick="startGame()">🚀 O‘yinni boshlash</button>
+
+</section>
+
+<section class="panel hidden" id="game">
+
+<p class="small" id="teamTurn"></p>
+
+<div class="question" id="question"></div>
+
+<div class="answers" id="answers"></div>
+
+<div id="feedback" class="hidden"></div>
+
+<div class="actions">
+
+<button class="primary hidden" id="next" onclick="nextQuestion()">Keyingi savol →</button>
+
+</div>
+
+</section>
+
+<section class="panel hidden" id="result">
+
+<h2>🎉 Bellashuv yakunlandi!</h2>
+
+<div class="question" id="winner"></div>
+
+<div class="teams">
+
+<div class="team"><strong>🔵 1-jamoa</strong><div class="score" id="final0">0</div> ball</div>
+
+<div class="team"><strong>🟠 2-jamoa</strong><div class="score" id="final1">0</div> ball</div>
+
+</div>
+
+<p id="summary"></p>
+
+<div class="actions">
+
+<button class="primary" onclick="restartGame()">🔄 Qayta boshlash</button>
+
+<button onclick="window.print()">🖨️ Natijani chiqarish</button>
+
+</div>
+
+</section>
+
+<footer class="small" style="text-align:center;padding:12px">
+
+Bilim — muvaffaqiyat kaliti! 🌱
+
+</footer>
 
 </main>
 
 <script>
 
-function startQuiz(){
+const Q = [
 
-document.getElementById('game').innerHTML=
+{
 
-'<div class="card"><h2>Jamoalar tayyormi?</h2><p>1-jamoa va 2-jamoa navbat bilan savollarga javob beradi.</p><p>Keyingi bosqichda savollar va ball hisoblash tizimi qo‘shiladi.</p><button onclick="location.reload()">Bosh sahifaga qaytish</button></div>';
+q:"Klassyor usulida paxta tolasining sifatini baholashda qaysi belgilar majmuasi muhim?",
+
+a:["Faqat tola uzunligi va namligi","Rang, tashqi ko‘rinish, nuqsonlar va iflos aralashmalar","Faqat chigit massasi"],
+
+c:1,
+
+e:"Klassyor usulida tolaning tashqi ko‘rinishi, rangi, nuqsonlari va ifloslanishi kabi belgilar hisobga olinadi."
+
+},
+
+{
+
+q:"Tola rangining sarg‘ayishi yoki xiralashishiga qaysi omillar ta’sir qilishi mumkin?",
+
+a:["Faqat tola uzunligi","Faqat chigit o‘lchami","Yetilish, ob-havo va saqlash sharoitlari"],
+
+c:2,
+
+e:"Tolaning rangi yetilish darajasi va paxtaning o‘sishi hamda saqlanish sharoitlari bilan bog‘liq bo‘lishi mumkin."
+
+},
+
+{
+
+q:"Nepslar paxta tolasi tarkibida qanday nuqson hisoblanadi?",
+
+a:["Mayda tolalar va tolali tugunchalar ko‘rinishidagi nuqsonlar","Faqat yirik barg bo‘laklari","Tolaning me’yoriy uzunligi"],
+
+c:0,
+
+e:"Nepslar tolalarning chigallashishi natijasida yuzaga keladigan mayda tugunchalardir."
+
+},
+
+{
+
+q:"Mikroneyr ko‘rsatkichining yuqori bo‘lishi har doim tola sifati yuqori ekanini anglatadimi?",
+
+a:["Ha, mikroneyr yuqori bo‘lsa, sifat doimo yaxshi","Yo‘q, ko‘rsatkich tolaning ingichkaligi va yetilganligi bilan bog‘liq, me’yor ham hisobga olinadi","Ha, u faqat uzunlikni o‘lchaydi"],
+
+c:1,
+
+e:"Mikroneyrni alohida talqin qilib bo‘lmaydi. Tola turi va tegishli me’yorlar ham hisobga olinadi."
+
+},
+
+{
+
+q:"Tola uzunligi va uzunlik bo‘yicha bir xillik o‘rtasidagi farq nimada?",
+
+a:["Ikkalasi faqat rangni tavsiflaydi","Bir xillik tolaning mutlaq uzunligini bildiradi","Uzunlik o‘lchamni, bir xillik esa uzunliklarning taqsimlanishini tavsiflaydi"],
+
+c:2,
+
+e:"Uzunlik tola o‘lchamini, bir xillik esa tolalar uzunligining o‘zaro qanchalik bir xil ekanini ifodalaydi."
+
+},
+
+{
+
+q:"Paxta namunasini noto‘g‘ri olish qanday oqibatga olib kelishi mumkin?",
+
+a:["Natijalar butun partiya sifatini to‘g‘ri aks ettirmasligi mumkin","Tarozi aniqligi avtomatik oshadi","Tolaning tabiiy xususiyatlari o‘zgaradi"],
+
+c:0,
+
+e:"Namuna partiyani to‘g‘ri ifodalashi kerak. Noto‘g‘ri namuna noto‘g‘ri xulosaga olib kelishi mumkin."
+
+},
+
+{
+
+q:"Klassyor usulida vizual baholashning asosiy cheklovi nimada?",
+
+a:["Tashqi ko‘rinishni baholab bo‘lmaydi","Mutaxassis tajribasi va kuzatish sharoiti natijaga ta’sir qilishi mumkin","Usul faqat massani aniqlaydi"],
+
+c:1,
+
+e:"Vizual baholashda tajriba, yorug‘lik va standart mezonlarga rioya qilish muhim."
+
+},
+
+{
+
+q:"Iflos aralashmalar ko‘payishi qanday texnologik muammolarni keltirib chiqarishi mumkin?",
+
+a:["Tola uzunligini doimo oshiradi","Tolani har doim oqartiradi","Tozalashdagi yo‘qotishlar va tayyor ipdagi nuqsonlar ortishi mumkin"],
+
+c:2,
+
+e:"Iflos aralashmalarni tozalash qo‘shimcha ishlov talab qiladi va mahsulot sifatiga salbiy ta’sir ko‘rsatishi mumkin."
+
+},
+
+{
+
+q:"Tolaning yetilganligi yetarli bo‘lmasa, qanday holat kuzatilishi mumkin?",
+
+a:["Tola devori yetarlicha rivojlanmaydi va ayrim texnologik xususiyatlar yomonlashadi","Tola doimo uzunroq bo‘ladi","Barcha sifat ko‘rsatkichlari avtomatik yaxshilanadi"],
+
+c:0,
+
+e:"Yetilmagan tolalarda hujayra devori yetarli rivojlanmasligi mumkin, bu ularning xususiyatlariga ta’sir qiladi."
+
+},
+
+{
+
+q:"Paxta tolasining mustahkamligi nimani ifodalaydi?",
+
+a:["Tolaning tashqi rangini","Tolaning uzilishga qarshilik ko‘rsatish qobiliyatini","Tolaning namligini"],
+
+c:1,
+
+e:"Mustahkamlik tolaning tortish kuchi ta’sirida uzilishga qarshilik ko‘rsatish xususiyatidir."
+
+},
+
+{
+
+q:"Namlik me’yoridan ortishi paxtani saqlashda qanday xavf tug‘diradi?",
+
+a:["Tola uzunligini oshiradi","Har qanday sharoitda mustahkamlikni oshiradi","Qizish, mog‘orlanish va sifat yomonlashishiga sabab bo‘lishi mumkin"],
+
+c:2,
+
+e:"Ortiqcha namlik paxtaning qizishi va mog‘orlanishi xavfini oshirishi mumkin."
+
+},
+
+{
+
+q:"Nima uchun paxta sifatini faqat bitta ko‘rsatkich asosida baholash yetarli emas?",
+
+a:["Turli ko‘rsatkichlar tolaning turli xususiyatlarini tavsiflaydi","Barcha ko‘rsatkichlar bir xil ma’noga ega","Sifatni baholashda o‘lchovlar kerak emas"],
+
+c:0,
+
+e:"Tola sifati bir nechta xususiyatdan tashkil topadi, shuning uchun kompleks baholash muhim."
+
+},
+
+{
+
+q:"Bir xil namunani turli yorug‘lik sharoitida ko‘rish nima uchun natijani o‘zgartirishi mumkin?",
+
+a:["Tola uzunligi darhol o‘zgaradi","Rang va tashqi ko‘rinishni idrok etish sharoitga bog‘liq","Chigit massasi o‘zgaradi"],
+
+c:1,
+
+e:"Yorug‘lik rangni ko‘rishga ta’sir qiladi. Shu sababli baholash sharoitini imkon qadar bir xil saqlash kerak."
+
+},
+
+{
+
+q:"Klassyor baholash natijalarining ishonchliligini oshirish uchun qaysi yondashuv ma’qul?",
+
+a:["Har safar turli mezonlardan foydalanish","Faqat bitta tasodifiy tolani tekshirish","Namuna olish qoidalari va baholash mezonlariga izchil rioya qilish"],
+
+c:2,
+
+e:"Standart tartib, to‘g‘ri namuna va bir xil baholash mezonlari natijalarni taqqoslashga yordam beradi."
+
+},
+
+{
+
+q:"Paxta tolasining sifat ko‘rsatkichlarini kompleks baholashdan asosiy maqsad nima?",
+
+a:["Xomashyo sifatini to‘liqroq tavsiflash va qayta ishlashni to‘g‘ri tashkil etish","Faqat paxta rangini o‘zgartirish","Faqat chigit massasini hisoblash"],
+
+c:0,
+
+e:"Kompleks baholash xomashyoning xususiyatlarini yaxshiroq tushunish va qayta ishlashni rejalashtirishga yordam beradi."
+
+}
+
+];
+
+let i=0, team=0, scores=[0,0], locked=false;
+
+function startGame(){
+
+ i=0; team=0; scores=[0,0];
+
+ document.getElementById("score0").textContent="0";
+
+ document.getElementById("score1").textContent="0";
+
+ document.getElementById("start").classList.add("hidden");
+
+ document.getElementById("game").classList.remove("hidden");
+
+ document.getElementById("result").classList.add("hidden");
+
+ showQuestion();
+
+}
+
+function showQuestion(){
+
+ locked=false;
+
+ const q=Q[i];
+
+ document.getElementById("question").textContent=(i+1)+". "+q.q;
+
+ document.getElementById("counter").textContent=(i+1)+" / "+Q.length+"-savol";
+
+ document.getElementById("teamTurn").textContent="Navbat: "+(team+1)+"-jamoa";
+
+ document.getElementById("turn").textContent="Jamoalar bellashuvi davom etmoqda";
+
+ document.getElementById("team0").classList.toggle("active",team===0);
+
+ document.getElementById("team1").classList.toggle("active",team===1);
+
+ document.getElementById("progress").style.width=(i/Q.length*100)+"%";
+
+ document.getElementById("feedback").classList.add("hidden");
+
+ document.getElementById("next").classList.add("hidden");
+
+ const area=document.getElementById("answers");
+
+ area.innerHTML="";
+
+ q.a.forEach((answer,n)=>{
+
+  const b=document.createElement("button");
+
+  b.className="answer";
+
+  b.textContent=String.fromCharCode(65+n)+". "+answer;
+
+  b.onclick=()=>chooseAnswer(n,b);
+
+  area.appendChild(b);
+
+ });
+
+}
+
+function chooseAnswer(n,button){
+
+ if(locked)return;
+
+ locked=true;
+
+ const q=Q[i];
+
+ const buttons=document.querySelectorAll(".answer");
+
+ buttons.forEach((b,k)=>{
+
+  b.disabled=true;
+
+  if(k===q.c)b.classList.add("good");
+
+ });
+
+ const f=document.getElementById("feedback");
+
+ f.classList.remove("hidden");
+
+ if(n===q.c){
+
+  scores[team]++;
+
+  document.getElementById("score"+team).textContent=scores[team];
+
+  f.textContent="✅ To‘g‘ri javob! +1 ball. "+q.e;
+
+ }else{
+
+  button.classList.add("bad");
+
+  f.textContent="❌ Noto‘g‘ri javob. To‘g‘ri javob: "+q.a[q.c]+". "+q.e;
+
+ }
+
+ document.getElementById("next").classList.remove("hidden");
+
+ document.getElementById("next").textContent=i===Q.length-1?"Natijani ko‘rish 🏆":"Keyingi savol →";
+
+}
+
+function nextQuestion(){
+
+ if(!locked)return;
+
+ i++;
+
+ if(i>=Q.length){finishGame();return;}
+
+ team=1-team;
+
+ showQuestion();
+
+}
+
+function finishGame(){
+
+ document.getElementById("game").classList.add("hidden");
+
+ document.getElementById("result").classList.remove("hidden");
+
+ document.getElementById("progress").style.width="100%";
+
+ document.getElementById("final0").textContent=scores[0];
+
+ document.getElementById("final1").textContent=scores[1];
+
+ document.getElementById("summary").textContent="Jami 15 ta savol berildi.";
+
+ document.getElementById("turn").textContent="Bellashuv yakunlandi";
+
+ if(scores[0]===scores[1]){
+
+  document.getElementById("winner").textContent="🤝 Durang! Har ikki jamoa teng ball to‘pladi.";
+
+ }else if(scores[0]>scores[1]){
+
+  document.getElementById("winner").textContent="🏆 1-JAMOA G‘OLIB! Tabriklaymiz!";
+
+ }else{
+
+  document.getElementById("winner").textContent="🏆 2-JAMOA G‘OLIB! Tabriklaymiz!";
+
+ }
+
+}
+
+function restartGame(){
+
+ document.getElementById("result").classList.add("hidden");
+
+ document.getElementById("game").classList.add("hidden");
+
+ document.getElementById("start").classList.remove("hidden");
+
+ document.getElementById("turn").textContent="O‘yinni boshlash uchun tugmani bosing.";
+
+ document.getElementById("counter").textContent="15 ta savol";
+
+ document.getElementById("progress").style.width="0";
+
+ document.getElementById("score0").textContent="0";
+
+ document.getElementById("score1").textContent="0";
+
+ document.getElementById("team0").classList.add("active");
+
+ document.getElementById("team1").classList.remove("active");
 
 }
 
